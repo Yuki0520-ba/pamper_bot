@@ -27,26 +27,9 @@ module.exports = (robot) => {
   });
 
 
-  /////test/////
-  robot.respond(/hoge$/i, (res) => {
-    res.send('hoge hoge');
-  });
+  
 
-  robot.respond('map', (res) => {
-    res.send(`Your location is ${res.json.place} at ${res.json.lat}, ${res.json.lng}`);
-  });
-
-
-  robot.respond(/num (.*)$/i, (res) => {
-    var c=new calc();
-    var num=c.add(parseInt(res.match[1]));
-    console.log("sample",num)
-    res.send(String(num));
-  });
-
-
-
-  //open wether Mapから天気情報を取得してボットに返す
+  //open wether Mapから今日の天気情報を取得してボットに返す
   robot.respond(/おはよう$/i, (res1) => {
     var http = require('http');
 
@@ -74,20 +57,13 @@ module.exports = (robot) => {
     });
   });
   
-  robot.enter((res) => {
-    res.send(`Hi! ${res.message.user.name}`);
-  });
-
-
-
   
 
-  //open wether Mapから天気情報を取得してボットに返す
+  //open wether Mapから明日の朝９時の天気情報を取得してボットに返す
   robot.respond(/おやすみ$/i, (res1) => {
+    //api叩く
     var http = require('http');
-
-    var zip='102-0071,jp';
-    
+    var zip='102-0071,jp'; 
     //var zip=res1.match[1]+',jp';
     var units = 'metric';
     var APIKEY = "87e3d13be8431fcf4ccedf1479ff2064";
@@ -100,8 +76,9 @@ module.exports = (robot) => {
       });
       res.on('data', function(chunk) {
         res = JSON.parse(body);
-        var tomorrow = new Date();
 
+        //明日の日付を文字列で生成
+        var tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
         var tomorrow_year = tomorrow.getFullYear();
         //月だけ+1する
@@ -116,8 +93,7 @@ module.exports = (robot) => {
         format_str = format_str.replace(/MM/g, tomorrow_month);
         format_str = format_str.replace(/DD/g, tomorrow_date);
 
-        console.log('tomorrow is',format_str);
-
+        //明日の９時時点の天気を返す
         for(var n=0;n<res.cnt;n++)
           if(res.list[n].dt_txt.match(format_str)){
             if(res.list[n].dt_txt.match("09:00:00"))
@@ -135,16 +111,7 @@ module.exports = (robot) => {
 
 
 
-var calc=function(){
-  this.add=function(num){
-    num+=10;
-    return num;
-  };
-  this.sub=function(num){
-    num-=10;
-    return num;
-  };
-};
+
 
 
 
