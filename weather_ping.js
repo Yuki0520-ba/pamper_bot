@@ -100,29 +100,34 @@ module.exports = (robot) => {
       });
       res.on('data', function(chunk) {
         res = JSON.parse(body);
-        
-        for(var n=0;n<res.cnt;n++){
-          var tomorrow = new Date();
-          tomorrow.setDate(tomorrow.getDate() + 1);
-          var tomorrow_date=tomorrow.getDate();
-          console.log(typeof(tomorrow_date));
-        
+        var tomorrow = new Date();
 
-          
-        }
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        var tomorrow_year = tomorrow.getFullYear();
+        //月だけ+1する
+        var tomorrow_month = 1 + tomorrow.getMonth();
+        var tomorrow_date=tomorrow.getDate();
 
+        tomorrow_month = ('0' + tomorrow_month).slice(-2);
+        tomorrow_date = ('0' + tomorrow_date).slice(-2);
 
-        //res1.send(String(res.name));
-        //res1.send("今日の天気は　"+String(res.weather[0].description)+"　です!");
+        var format_str = 'YYYY-MM-DD';
+        format_str = format_str.replace(/YYYY/g, tomorrow_year);
+        format_str = format_str.replace(/MM/g, tomorrow_month);
+        format_str = format_str.replace(/DD/g, tomorrow_date);
+
+        console.log('tomorrow is',format_str);
+
+        for(var n=0;n<res.cnt;n++)
+          if(res.list[n].dt_txt.match(format_str)){
+            if(res.list[n].dt_txt.match("09:00:00"))
+              res1.send("明日の朝の天気は "+res.list[n].weather[0].description+" です!");
+            }  
         
       });
     }).on('error', function(e) {
       console.log(e.message);
     });
-  });
-  
-  robot.enter((res) => {
-    res.send(`Hi! ${res.message.user.name}`);
   });
   
 };
