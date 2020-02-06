@@ -8,3 +8,5 @@ directで動くbot
 daabのディレクトリの直下にu_info.js, init_profile.js, u_info.jsonを置き，  
 残りのファイルはscriptsディレクトリに置く  
 本番用はproductionブランチに有ります
+
+
